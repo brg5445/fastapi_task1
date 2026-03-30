@@ -1,12 +1,12 @@
-from pydantic import BaseModel
-from typing import List, TYPE_CHECKING
+from pydantic import BaseModel, Field
+from typing import List, TYPE_CHECKING, Annotated
 
 if TYPE_CHECKING:
     from src.schemas.posts import Post
 
 
 class CategoryBase(BaseModel):
-    name: str
+    name: Annotated[str, Field(..., min_length=1, max_length=100)]
 
 
 class CategoryCreate(CategoryBase):
@@ -14,10 +14,8 @@ class CategoryCreate(CategoryBase):
 
 
 class Category(CategoryBase):
-    id: int
-    posts: List["Post"] = []
+    id: Annotated[int, Field(ge=1)]
+    posts: Annotated[List["Post"], Field(default_factory=list)]
 
     class Config:
         from_attributes = True
-
-
